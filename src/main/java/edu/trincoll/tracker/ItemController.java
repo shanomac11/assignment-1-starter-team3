@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * - Team Members: [List your team members' names]
  */
 @RestController
-@RequestMapping(value = "/api/items", produces = MediaType.APPLICATION_JSON_VALUE) // TODO: Rename to match your domain (e.g., /api/bookmarks, /api/recipes)
+@RequestMapping(value = "/api/habit", produces = MediaType.APPLICATION_JSON_VALUE) // TODO: Rename to match your domain (e.g., /api/bookmarks, /api/recipes)
 public class ItemController {
 
     // Simple in-memory store (will be replaced by a database later)
@@ -26,7 +26,7 @@ public class ItemController {
     private static final AtomicLong ID_SEQ = new AtomicLong(1);
 
     /**
-     * GET /api/items
+     * GET /api/habit
      * Returns all items in the system
      */
     @GetMapping
