@@ -17,7 +17,7 @@ During our first class, we built a simple Task API together. Your team's mission
 
 ## Part 1: Choose Your Domain (20 points)
 
-Each team must pick ONE unique domain from:
+Each team must pick a domain. Here are some sample ideas:
 
 1. **BookmarkManager** - Save and categorize web links
 2. **QuoteKeeper** - Store favorite quotes with authors  
@@ -25,7 +25,7 @@ Each team must pick ONE unique domain from:
 4. **RecipeBox** - Store cooking recipes with ingredients
 5. **MovieWatchlist** - Track movies to watch and ratings
 
-First team to claim a domain gets it (post in Discord/Slack).
+Domains don't have to be unique between different teams.
 
 ## Part 2: Implementation Requirements (60 points)
 
@@ -116,13 +116,13 @@ curl -X DELETE http://localhost:8080/api/items/1
 
 ## Grading Rubric
 
-| Criteria | Points | Description |
-|----------|--------|-------------|
-| **Tests Pass** | 60 | All 15 tests must pass (4 points each) |
-| **Domain Customization** | 20 | Proper domain modeling, not generic "Item" |
-| **Code Quality** | 10 | Clean code, no major SonarCloud issues |
-| **AI Documentation** | 10 | Thoughtful reflection on AI usage |
-| **Bonus: Search** | +5 | Implement search functionality |
+| Criteria                 | Points | Description                                |
+|--------------------------|--------|--------------------------------------------|
+| **Tests Pass**           | 60     | All 15 tests must pass (4 points each)     |
+| **Domain Customization** | 20     | Proper domain modeling, not generic "Item" |
+| **Code Quality**         | 10     | Clean code, no major SonarCloud issues     |
+| **AI Documentation**     | 10     | Thoughtful reflection on AI usage          |
+| **Bonus: Search**        | +5     | Implement search functionality             |
 
 ## Tips for Success
 
