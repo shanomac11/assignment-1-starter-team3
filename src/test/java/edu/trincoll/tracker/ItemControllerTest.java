@@ -16,323 +16,323 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Test suite for the Item API.
+ * Test suite for the Habit API.
  * <p>
  * ALL TESTS MUST PASS for full credit.
  * Do not modify these tests - modify your code to make them pass.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-@DisplayName("Item Controller Tests")
-class ItemControllerTest {
-    
+@DisplayName("Habit Controller Tests")
+class HabitControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
-    
+
     @Autowired
     private ObjectMapper objectMapper;
-    
+
     @BeforeEach
     void setUp() throws Exception {
         // Clear any existing data before each test
-        ItemController.clearStore();
+        HabitController.clearStore();
     }
-    
+
     @Nested
-    @DisplayName("GET /api/items")
-    class GetAllItems {
-        
+    @DisplayName("GET /api/Habits")
+    class GetAllHabits {
+
         @Test
-        @DisplayName("should return empty list when no items exist")
+        @DisplayName("should return empty list when no Habits exist")
         void shouldReturnEmptyList() throws Exception {
-            mockMvc.perform(get("/api/items"))
+            mockMvc.perform(get("/api/Habits"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(0))));
         }
-        
+
         @Test
-        @DisplayName("should return all items when items exist")
-        void shouldReturnAllItems() throws Exception {
-            // Create a test item first
-            Item testItem = new Item();
-            testItem.setName("Test Item");
-            testItem.setDescription("Test Description");
-            
-            mockMvc.perform(post("/api/items")
+        @DisplayName("should return all Habits when Habits exist")
+        void shouldReturnAllHabits() throws Exception {
+            // Create a test Habit first
+            Habit testHabit = new Habit();
+            testHabit.setName("Test Habit");
+            testHabit.setDescription("Test Description");
+
+            mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(testItem)))
+                    .content(objectMapper.writeValueAsString(testHabit)))
                     .andExpect(status().isCreated());
-            
-            // Now get all items
-            mockMvc.perform(get("/api/items"))
+
+            // Now get all Habits
+            mockMvc.perform(get("/api/Habits"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))))
-                    .andExpect(jsonPath("$[?(@.name == 'Test Item')]").exists());
+                    .andExpect(jsonPath("$[?(@.name == 'Test Habit')]").exists());
         }
     }
-    
+
     @Nested
-    @DisplayName("GET /api/items/{id}")
-    class GetItemById {
-        
+    @DisplayName("GET /api/Habits/{id}")
+    class GetHabitById {
+
         @Test
-        @DisplayName("should return item when it exists")
-        void shouldReturnItemWhenExists() throws Exception {
-            // Create a test item first
-            Item testItem = new Item();
-            testItem.setName("Specific Item");
-            testItem.setDescription("Specific Description");
-            
-            String response = mockMvc.perform(post("/api/items")
+        @DisplayName("should return Habit when it exists")
+        void shouldReturnHabitWhenExists() throws Exception {
+            // Create a test Habit first
+            Habit testHabit = new Habit();
+            testHabit.setName("Specific Habit");
+            testHabit.setDescription("Specific Description");
+
+            String response = mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(testItem)))
+                    .content(objectMapper.writeValueAsString(testHabit)))
                     .andExpect(status().isCreated())
                     .andReturn()
                     .getResponse()
                     .getContentAsString();
-            
-            Item createdItem = objectMapper.readValue(response, Item.class);
-            
-            // Get the specific item
-            mockMvc.perform(get("/api/items/{id}", createdItem.getId()))
+
+            Habit createdHabit = objectMapper.readValue(response, Habit.class);
+
+            // Get the specific Habit
+            mockMvc.perform(get("/api/Habits/{id}", createdHabit.getId()))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.name").value("Specific Item"))
+                    .andExpect(jsonPath("$.name").value("Specific Habit"))
                     .andExpect(jsonPath("$.description").value("Specific Description"));
         }
-        
+
         @Test
-        @DisplayName("should return 404 when item doesn't exist")
-        void shouldReturn404WhenItemDoesNotExist() throws Exception {
-            mockMvc.perform(get("/api/items/{id}", 999999))
+        @DisplayName("should return 404 when Habit doesn't exist")
+        void shouldReturn404WhenHabitDoesNotExist() throws Exception {
+            mockMvc.perform(get("/api/Habits/{id}", 999999))
                     .andExpect(status().isNotFound());
         }
     }
-    
+
     @Nested
-    @DisplayName("POST /api/items")
-    class CreateItem {
-        
+    @DisplayName("POST /api/Habits")
+    class CreateHabit {
+
         @Test
-        @DisplayName("should create new item with valid data")
-        void shouldCreateNewItem() throws Exception {
-            Item newItem = new Item();
-            newItem.setName("New Item");
-            newItem.setDescription("New Description");
-            
-            mockMvc.perform(post("/api/items")
+        @DisplayName("should create new Habit with valid data")
+        void shouldCreateNewHabit() throws Exception {
+            Habit newHabit = new Habit();
+            newHabit.setName("New Habit");
+            newHabit.setDescription("New Description");
+
+            mockMvc.perform(post("/api/habit")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(newItem)))
+                    .content(objectMapper.writeValueAsString(newHabit)))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.id").exists())
-                    .andExpect(jsonPath("$.name").value("New Item"))
+                    .andExpect(jsonPath("$.name").value("New Habit"))
                     .andExpect(jsonPath("$.description").value("New Description"));
         }
-        
+
         @Test
         @DisplayName("should return 400 when name is missing")
         void shouldReturn400WhenNameMissing() throws Exception {
             String invalidJson = """
                     {"description":"No name provided"}""";
-            
-            mockMvc.perform(post("/api/items")
+
+            mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(invalidJson))
                     .andExpect(status().isBadRequest());
         }
-        
+
         @Test
         @DisplayName("should return 400 when name is blank")
         void shouldReturn400WhenNameBlank() throws Exception {
-            Item invalidItem = new Item();
-            invalidItem.setName("");  // Blank name
-            invalidItem.setDescription("Valid Description");
-            
-            mockMvc.perform(post("/api/items")
+            Habit invalidHabit = new Habit();
+            invalidHabit.setName("");  // Blank name
+            invalidHabit.setDescription("Valid Description");
+
+            mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(invalidItem)))
+                    .content(objectMapper.writeValueAsString(invalidHabit)))
                     .andExpect(status().isBadRequest());
         }
-        
+
         @Test
-        @DisplayName("should not allow duplicate items with same name")
+        @DisplayName("should not allow duplicate Habits with same name")
         void shouldNotAllowDuplicates() throws Exception {
-            Item firstItem = new Item();
-            firstItem.setName("Unique Name");
-            firstItem.setDescription("First Description");
-            
-            // Create first item
-            mockMvc.perform(post("/api/items")
+            Habit firstHabit = new Habit();
+            firstHabit.setName("Unique Name");
+            firstHabit.setDescription("First Description");
+
+            // Create first Habit
+            mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(firstItem)))
+                    .content(objectMapper.writeValueAsString(firstHabit)))
                     .andExpect(status().isCreated());
-            
+
             // Try to create duplicate
-            Item duplicateItem = new Item();
-            duplicateItem.setName("Unique Name");  // Same name
-            duplicateItem.setDescription("Different Description");
-            
-            mockMvc.perform(post("/api/items")
+            Habit duplicateHabit = new Habit();
+            duplicateHabit.setName("Unique Name");  // Same name
+            duplicateHabit.setDescription("Different Description");
+
+            mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(duplicateItem)))
+                    .content(objectMapper.writeValueAsString(duplicateHabit)))
                     .andExpect(status().isConflict());  // 409 Conflict
         }
     }
-    
+
     @Nested
-    @DisplayName("PUT /api/items/{id}")
-    class UpdateItem {
-        
+    @DisplayName("PUT /api/Habits/{id}")
+    class UpdateHabit {
+
         @Test
-        @DisplayName("should update existing item")
-        void shouldUpdateExistingItem() throws Exception {
-            // Create initial item
-            Item initialItem = new Item();
-            initialItem.setName("Original Name");
-            initialItem.setDescription("Original Description");
-            
-            String response = mockMvc.perform(post("/api/items")
+        @DisplayName("should update existing Habit")
+        void shouldUpdateExistingHabit() throws Exception {
+            // Create initial Habit
+            Habit initialHabit = new Habit();
+            initialHabit.setName("Original Name");
+            initialHabit.setDescription("Original Description");
+
+            String response = mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(initialItem)))
+                    .content(objectMapper.writeValueAsString(initialHabit)))
                     .andExpect(status().isCreated())
                     .andReturn()
                     .getResponse()
                     .getContentAsString();
-            
-            Item createdItem = objectMapper.readValue(response, Item.class);
-            
-            // Update the item
-            Item updatedItem = new Item();
-            updatedItem.setName("Updated Name");
-            updatedItem.setDescription("Updated Description");
-            updatedItem.setCompleted(true);
-            
-            mockMvc.perform(put("/api/items/{id}", createdItem.getId())
+
+            Habit createdHabit = objectMapper.readValue(response, Habit.class);
+
+            // Update the Habit
+            Habit updatedHabit = new Habit();
+            updatedHabit.setName("Updated Name");
+            updatedHabit.setDescription("Updated Description");
+            updatedHabit.completeToday();
+
+            mockMvc.perform(put("/api/Habits/{id}", createdHabit.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(updatedItem)))
+                    .content(objectMapper.writeValueAsString(updatedHabit)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.name").value("Updated Name"))
                     .andExpect(jsonPath("$.description").value("Updated Description"))
                     .andExpect(jsonPath("$.completed").value(true));
         }
-        
+
         @Test
-        @DisplayName("should return 404 when updating non-existent item")
+        @DisplayName("should return 404 when updating non-existent Habit")
         void shouldReturn404WhenUpdatingNonExistent() throws Exception {
-            Item updateItem = new Item();
-            updateItem.setName("Update Name");
-            updateItem.setDescription("Update Description");
-            
-            mockMvc.perform(put("/api/items/{id}", 999999)
+            Habit updateHabit = new Habit();
+            updateHabit.setName("Update Name");
+            updateHabit.setDescription("Update Description");
+
+            mockMvc.perform(put("/api/Habits/{id}", 999999)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(updateItem)))
+                    .content(objectMapper.writeValueAsString(updateHabit)))
                     .andExpect(status().isNotFound());
         }
-        
+
         @Test
         @DisplayName("should validate required fields on update")
         void shouldValidateRequiredFieldsOnUpdate() throws Exception {
-            // Create initial item
-            Item initialItem = new Item();
-            initialItem.setName("Original Name");
-            initialItem.setDescription("Original Description");
-            
-            String response = mockMvc.perform(post("/api/items")
+            // Create initial Habit
+            Habit initialHabit = new Habit();
+            initialHabit.setName("Original Name");
+            initialHabit.setDescription("Original Description");
+
+            String response = mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(initialItem)))
+                    .content(objectMapper.writeValueAsString(initialHabit)))
                     .andExpect(status().isCreated())
                     .andReturn()
                     .getResponse()
                     .getContentAsString();
-            
-            Item createdItem = objectMapper.readValue(response, Item.class);
-            
+
+            Habit createdHabit = objectMapper.readValue(response, Habit.class);
+
             // Try to update with invalid data
             String invalidUpdate = "{\"name\":\"\",\"description\":\"Valid Description\"}";
-            
-            mockMvc.perform(put("/api/items/{id}", createdItem.getId())
+
+            mockMvc.perform(put("/api/Habits/{id}", createdHabit.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(invalidUpdate))
                     .andExpect(status().isBadRequest());
         }
     }
-    
+
     @Nested
-    @DisplayName("DELETE /api/items/{id}")
-    class DeleteItem {
-        
+    @DisplayName("DELETE /api/Habits/{id}")
+    class DeleteHabit {
+
         @Test
-        @DisplayName("should delete existing item")
-        void shouldDeleteExistingItem() throws Exception {
-            // Create item to delete
-            Item itemToDelete = new Item();
-            itemToDelete.setName("Delete Me");
-            itemToDelete.setDescription("To Be Deleted");
-            
-            String response = mockMvc.perform(post("/api/items")
+        @DisplayName("should delete existing Habit")
+        void shouldDeleteExistingHabit() throws Exception {
+            // Create Habit to delete
+            Habit HabitToDelete = new Habit();
+            HabitToDelete.setName("Delete Me");
+            HabitToDelete.setDescription("To Be Deleted");
+
+            String response = mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(itemToDelete)))
+                    .content(objectMapper.writeValueAsString(HabitToDelete)))
                     .andExpect(status().isCreated())
                     .andReturn()
                     .getResponse()
                     .getContentAsString();
-            
-            Item createdItem = objectMapper.readValue(response, Item.class);
-            
-            // Delete the item
-            mockMvc.perform(delete("/api/items/{id}", createdItem.getId()))
+
+            Habit createdHabit = objectMapper.readValue(response, Habit.class);
+
+            // Delete the Habit
+            mockMvc.perform(delete("/api/Habits/{id}", createdHabit.getId()))
                     .andExpect(status().isNoContent());
-            
+
             // Verify it's gone
-            mockMvc.perform(get("/api/items/{id}", createdItem.getId()))
+            mockMvc.perform(get("/api/Habits/{id}", createdHabit.getId()))
                     .andExpect(status().isNotFound());
         }
-        
+
         @Test
-        @DisplayName("should return 404 when deleting non-existent item")
+        @DisplayName("should return 404 when deleting non-existent Habit")
         void shouldReturn404WhenDeletingNonExistent() throws Exception {
-            mockMvc.perform(delete("/api/items/{id}", 999999))
+            mockMvc.perform(delete("/api/Habits/{id}", 999999))
                     .andExpect(status().isNotFound());
         }
     }
-    
+
     @Nested
     @DisplayName("Bonus: Search Functionality")
-    class SearchItems {
-        
+    class SearchHabits {
+
         @Test
-        @DisplayName("BONUS: should search items by name")
-        void shouldSearchItemsByName() throws Exception {
-            // Create test items
-            Item item1 = new Item();
-            item1.setName("Apple");
-            item1.setDescription("Red fruit");
-            
-            Item item2 = new Item();
-            item2.setName("Banana");
-            item2.setDescription("Yellow fruit");
-            
-            Item item3 = new Item();
-            item3.setName("Application");
-            item3.setDescription("Software");
-            
-            mockMvc.perform(post("/api/items")
+        @DisplayName("BONUS: should search Habits by name")
+        void shouldSearchHabitsByName() throws Exception {
+            // Create test Habits
+            Habit Habit1 = new Habit();
+            Habit1.setName("Apple");
+            Habit1.setDescription("Red fruit");
+
+            Habit Habit2 = new Habit();
+            Habit2.setName("Banana");
+            Habit2.setDescription("Yellow fruit");
+
+            Habit Habit3 = new Habit();
+            Habit3.setName("Application");
+            Habit3.setDescription("Software");
+
+            mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(item1)))
+                    .content(objectMapper.writeValueAsString(Habit1)))
                     .andExpect(status().isCreated());
-            
-            mockMvc.perform(post("/api/items")
+
+            mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(item2)))
+                    .content(objectMapper.writeValueAsString(Habit2)))
                     .andExpect(status().isCreated());
-            
-            mockMvc.perform(post("/api/items")
+
+            mockMvc.perform(post("/api/Habits")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(item3)))
+                    .content(objectMapper.writeValueAsString(Habit3)))
                     .andExpect(status().isCreated());
-            
-            // Search for items containing "App"
-            mockMvc.perform(get("/api/items/search")
+
+            // Search for Habits containing "App"
+            mockMvc.perform(get("/api/Habits/search")
                     .param("name", "App"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(2)))
