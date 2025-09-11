@@ -177,6 +177,38 @@ public class Habit {
         currentStreak = 0;
     }
 
+    /** Explicitly mark this habit as completed on a specific date. */
+    public void setCompleted(LocalDate date) {
+        if (date == null) {
+            throw new IllegalArgumentException("Completion date cannot be null");
+        }
+        if (lastCompleted != null && lastCompleted.plusDays(1).equals(date)) {
+            currentStreak += 1; // consecutive day
+        } else if (lastCompleted == null || lastCompleted.isBefore(date)) {
+            currentStreak = 1;  // reset streak
+        }
+        bestStreak = Math.max(bestStreak, currentStreak);
+        lastCompleted = date;
+    }
+
+    /** Check if the habit is completed today. */
+    public boolean isCompleted() {
+        return lastCompleted != null && lastCompleted.equals(LocalDate.now());
+    }
+
+    /** Controller-friendly setter: mark completed/uncompleted for *today*. */
+    public void setCompleted(boolean completed) {
+        if (completed) {
+            setCompleted(LocalDate.now()); // reuse streak logic
+        } else {
+            if (lastCompleted != null && lastCompleted.equals(LocalDate.now())) {
+                currentStreak = 0;
+                lastCompleted = null;
+            }
+        }
+    }
+
+
     // --------- Equality & Hashing ---------
     // Use id when present (common for persisted entities).
     // Fallback to name+createdAt to keep deterministic behavior pre-persist.
